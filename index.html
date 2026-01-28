@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="system">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>FinPilot — Dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <!-- App Shell -->
+  <div class="app">
+    <!-- Sidebar (desktop) -->
+    <aside class="sidebar" aria-label="Navegação">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">FP</div>
+        <div class="brand-text">
+          <div class="brand-name">FinPilot</div>
+          <div class="brand-sub">Gerenciador + Assistente IA</div>
+        </div>
+      </div>
+
+      <nav class="nav">
+        <a class="nav-link active" href="#">
+          <span class="nav-ico" aria-hidden="true">▦</span> Home
+        </a>
+        <a class="nav-link" href="#">
+          <span class="nav-ico" aria-hidden="true">≣</span> Transações
+        </a>
+        <a class="nav-link" href="#">
+          <span class="nav-ico" aria-hidden="true">⎘</span> Dívidas
+        </a>
+        <a class="nav-link" href="#">
+          <span class="nav-ico" aria-hidden="true">✦</span> IA
+        </a>
+        <a class="nav-link" href="#">
+          <span class="nav-ico" aria-hidden="true">◎</span> Metas
+        </a>
+        <a class="nav-link" href="#">
+          <span class="nav-ico" aria-hidden="true">↗</span> Relatórios
+        </a>
+        <a class="nav-link" href="#">
+          <span class="nav-ico" aria-hidden="true">⚙</span> Configurações
+        </a>
+      </nav>
+
+      <div class="sidebar-foot">
+        <button class="btn ghost full">Personalizar Dashboard</button>
+        <div class="hint">
+          Tema: <span class="chip">system</span> • Acessibilidade: <span class="chip">normal</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+      <!-- Topbar -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="icon-btn mobile-only" aria-label="Abrir menu">
+            ☰
+          </button>
+
+          <div class="page-title">
+            <h1>Dashboard</h1>
+            <p>Visão geral do seu mês e plano de ação</p>
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          
+          <!-- Seletor global (Ano/Mês) -->
+          <section class="period" aria-label="Período ativo">
+            <label class="field">
+              <span class="label">Ano</span>
+              <select class="select" aria-label="Selecionar ano">
+                <option>2024</option>
+                <option selected>2025</option>
+                <option>2026</option>
+              </select>
+            </label>
+
+
+
+            <label class="field">
+              <span class="label">Mês</span>
+              <select class="select" aria-label="Selecionar mês">
+                <option>Todos</option>
+                <option>Jan</option>
+                <option>Fev</option>
+                <option>Mar</option>
+                <option selected>Jul</option>
+                <option>Ago</option>
+                <option>Set</option>
+                <option>Out</option>
+                <option>Nov</option>
+                <option>Dez</option>
+              </select>
+            </label>
+
+            <button class="btn" type="button">Hoje</button>
+          </section>
+
+          <!-- Ações -->
+          <div class="actions">
+            <button class="btn ghost">Importar</button>
+            <button class="btn primary">Gerar plano (IA)</button>
+          </div>
+        </div>
+      </header>
+
+      <div class="period" style="gap:12px;">
+  <label class="field">
+    <span class="label">Tema</span>
+    <select id="themeSelect" class="select">
+      <option value="system">Sistema</option>
+      <option value="light">Claro</option>
+      <option value="dark">Escuro</option>
+    </select>
+  </label>
+
+      <label class="field">
+        <span class="label">Fonte</span>
+        <select id="fontSelect" class="select">
+          <option value="md">Normal</option>
+          <option value="lg">Grande</option>
+          <option value="xl">Extra</option>
+        </select>
+      </label>
+
+      <label class="field">
+        <span class="label">Contraste</span>
+        <select id="contrastSelect" class="select">
+          <option value="normal">Normal</option>
+          <option value="high">Alto</option>
+        </select>
+      </label>
+    </div>
+
+      <!-- Content grid -->
+      <section class="grid">
+        <!-- Summary cards -->
+        <div class="card span-12">
+          <div class="card-head">
+            <div>
+              <h2>Resumo do mês</h2>
+              <p class="muted">Salário vs compromissos • Sobra/Falta • Alertas</p>
+            </div>
+            <div class="segmented" role="group" aria-label="Modo de visão">
+              <button class="seg active" type="button">Mês</button>
+              <button class="seg" type="button">Ano</button>
+            </div>
+          </div>
+
+          <div class="kpis">
+            <article class="kpi">
+              <div class="kpi-label">Entradas</div>
+              <div class="kpi-value">R$ 3.200,00</div>
+              <div class="kpi-foot up">+R$ 150 vs mês anterior</div>
+            </article>
+
+            <article class="kpi">
+              <div class="kpi-label">Gastos</div>
+              <div class="kpi-value">R$ 2.180,40</div>
+              <div class="kpi-foot">fixos 1.320 • variáveis 860</div>
+            </article>
+
+            <article class="kpi">
+              <div class="kpi-label">Dívidas (mínimos)</div>
+              <div class="kpi-value">R$ 980,00</div>
+              <div class="kpi-foot warn">2 vencimentos em 7 dias</div>
+            </article>
+
+            <article class="kpi highlight">
+              <div class="kpi-label">Sobra/Falta</div>
+              <div class="kpi-value">R$ 39,60</div>
+              <div class="kpi-foot">comprometido 98,7%</div>
+            </article>
+          </div>
+
+          <div class="bar-wrap" aria-label="Barra de comprometimento do salário">
+            <div class="bar">
+              <div class="bar-fill" style="width: 88%"></div>
+              <div class="bar-meta">
+                <span>Comprometido</span>
+                <span>88%</span>
+              </div>
+            </div>
+            <div class="bar-sub">
+              <span class="dot debt"></span> Dívidas
+              <span class="dot fixed"></span> Fixos
+              <span class="dot var"></span> Variáveis
+            </div>
+          </div>
+
+          <div class="alerts">
+            <div class="alert warn">
+              <strong>Cartão Nubank</strong> vence em 3 dias • mínimo R$ 312,00
+              <button class="link">Ver</button>
+            </div>
+            <div class="alert info">
+              <strong>Assinatura detectada</strong> “Streaming” recorrente há 6 meses
+              <button class="link">Revisar</button>
+            </div>
+            <div class="alert ok">
+              <strong>Meta</strong> você manteve Mercado dentro do limite
+              <button class="link">Detalhes</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Debts table -->
+        <div class="card span-7">
+          <div class="card-head">
+            <div>
+              <h2>Dívidas deste mês</h2>
+              <p class="muted">Agrupadas por tipo • com prioridade sugerida</p>
+            </div>
+            <div class="card-actions">
+              <button class="btn ghost">Filtrar</button>
+              <button class="btn ghost">Salvar visão</button>
+            </div>
+          </div>
+
+          <div class="table-wrap" role="region" aria-label="Tabela de dívidas" tabindex="0">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Credor</th>
+                  <th>Tipo</th>
+                  <th>Venc.</th>
+                  <th class="right">Mínimo</th>
+                  <th class="right">Prior.</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <div class="cell-main">Nubank crédito</div>
+                    <div class="cell-sub">Conta: Nubank Marcelo</div>
+                  </td>
+                  <td><span class="pill">Cartão</span></td>
+                  <td>03/jul</td>
+                  <td class="right">R$ 312,00</td>
+                  <td class="right"><span class="score high">92</span></td>
+                  <td><span class="tag warn">Vence já</span></td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <div class="cell-main">Empréstimo</div>
+                    <div class="cell-sub">Banco X</div>
+                  </td>
+                  <td><span class="pill">Empréstimo</span></td>
+                  <td>10/jul</td>
+                  <td class="right">R$ 420,00</td>
+                  <td class="right"><span class="score med">74</span></td>
+                  <td><span class="tag">Em dia</span></td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <div class="cell-main">Acordo</div>
+                    <div class="cell-sub">Loja Y</div>
+                  </td>
+                  <td><span class="pill">Acordo</span></td>
+                  <td>25/jul</td>
+                  <td class="right">R$ 248,00</td>
+                  <td class="right"><span class="score low">41</span></td>
+                  <td><span class="tag ok">Ok</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="card-foot">
+            <button class="btn primary">Gerar plano de pagamento</button>
+            <button class="btn ghost">Adicionar dívida</button>
+          </div>
+        </div>
+
+        <!-- IA Panel -->
+        <div class="card span-5">
+          <div class="card-head">
+            <div>
+              <h2>Assistente IA</h2>
+              <p class="muted">Sugestões com confirmação • aprende com você</p>
+            </div>
+            <span class="chip">Beta</span>
+          </div>
+
+          <div class="ai-box">
+            <div class="ai-step">
+              <div class="ai-title">1) Obrigatório</div>
+              <div class="ai-desc">Pagar mínimos e vencimentos próximos</div>
+              <div class="ai-row">
+                <span class="mono">R$ 732,00</span>
+                <span class="tag warn">Prioridade alta</span>
+              </div>
+            </div>
+
+            <div class="ai-step">
+              <div class="ai-title">2) Prioritário</div>
+              <div class="ai-desc">Dívidas com maior risco/juros</div>
+              <div class="ai-row">
+                <span class="mono">+R$ 200,00</span>
+                <span class="tag">Avalanche</span>
+              </div>
+            </div>
+
+            <div class="ai-step">
+              <div class="ai-title">3) Se sobrar</div>
+              <div class="ai-desc">Reserva de emergência antes de investir</div>
+              <div class="ai-row">
+                <span class="mono">R$ 40,00</span>
+                <span class="tag ok">Reserva</span>
+              </div>
+            </div>
+
+            <div class="ai-actions">
+              <button class="btn primary full">Confirmar plano</button>
+              <button class="btn ghost full">Ajustar valores</button>
+            </div>
+          </div>
+
+          <div class="mini">
+            <div class="mini-row">
+              <span class="muted">Simulação</span>
+              <span class="muted">Se pagar +R$200/mês</span>
+            </div>
+            <div class="mini-big">Quita 1 dívida em ~3 meses</div>
+          </div>
+        </div>
+
+        <!-- Transactions preview -->
+        <div class="card span-12">
+          <div class="card-head">
+            <div>
+              <h2>Transações recentes</h2>
+              <p class="muted">Sugestões automáticas de categoria e status</p>
+            </div>
+            <div class="card-actions">
+              <button class="btn ghost">Ver todas</button>
+              <button class="btn ghost">Revisar pendências</button>
+              <button class="btn">Adicionar</button>
+            </div>
+          </div>
+
+          <div class="list">
+            <div class="list-item">
+              <div class="li-left">
+                <div class="li-title">Mercado — Super</div>
+                <div class="li-sub">02/jul • Conta: Nubank • Categoria: Mercado</div>
+              </div>
+              <div class="li-right">
+                <div class="li-amount">- R$ 86,40</div>
+                <span class="tag">Confirmado</span>
+              </div>
+            </div>
+
+            <div class="list-item">
+              <div class="li-left">
+                <div class="li-title">UBER *TRIP</div>
+                <div class="li-sub">01/jul • Conta: Nubank • Categoria sugerida: Transporte</div>
+              </div>
+              <div class="li-right">
+                <div class="li-amount">- R$ 22,90</div>
+                <span class="tag warn">Revisar</span>
+              </div>
+            </div>
+
+            <div class="list-item">
+              <div class="li-left">
+                <div class="li-title">Salário</div>
+                <div class="li-sub">01/jul • Entrada • Categoria: Renda</div>
+              </div>
+              <div class="li-right">
+                <div class="li-amount plus">+ R$ 3.200,00</div>
+                <span class="tag ok">Ok</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Mobile bottom nav -->
+      <nav class="bottom-nav" aria-label="Navegação inferior">
+        <a class="bn active" href="#"><span aria-hidden="true">▦</span><small>Home</small></a>
+        <a class="bn" href="#"><span aria-hidden="true">≣</span><small>Trans.</small></a>
+        <a class="bn" href="#"><span aria-hidden="true">⎘</span><small>Dívidas</small></a>
+        <a class="bn" href="#"><span aria-hidden="true">✦</span><small>IA</small></a>
+        <a class="bn" href="#"><span aria-hidden="true">⚙</span><small>Config</small></a>
+      </nav>
+    </main>
+  </div>
+<script src="app.js"></script>
+</body>
+</html>
