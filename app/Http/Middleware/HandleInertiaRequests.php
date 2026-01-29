@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Tightenco\Ziggy\Ziggy;
+use Carbon\Carbon;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -34,6 +35,15 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             'auth' => [
                 'user' => $request->user(),
+            ],
+            'uiPrefs' => [
+                'theme' => 'system',
+                'font' => 'md',
+                'contrast' => 'normal',
+            ],
+            'period' => [
+                'activeYear' => Carbon::now()->year,
+                'activeMonth' => 'all',
             ],
             'ziggy' => fn () => [
                 ...(new Ziggy)->toArray(),

@@ -1,5 +1,6 @@
 @import 'Scrollbar.css';
 @import 'fontes.css';
+@import 'finpilot.css';
 
 html {
     scroll-behavior: smooth;
