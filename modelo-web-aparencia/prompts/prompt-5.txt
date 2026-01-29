@@ -1,0 +1,274 @@
+# PROMPT 4/6 — FinPilot Dívidas (Gestão + Impacto no Salário + Base da Prioridade IA)
+
+Você é um engenheiro de software fullstack sênior.  
+Continue o projeto FinPilot (Laravel + Inertia + Vue 3).
+
+## Objetivo desta etapa
+Implementar o **módulo de Dívidas**, com:
+1) Cadastro e gestão de dívidas por tipo
+2) Visualização mensal integrada ao período global (Ano/Mês)
+3) Comparação direta **Salário/Entradas vs Dívidas**
+4) Cálculo de impacto mensal (mínimo e recomendado)
+5) **Score de prioridade base** (matemático, não IA ainda)
+6) UI profissional, simples para iniciantes, poderosa para avançados
+
+⚠️ Regras:
+- Usar o CSS oficial finpilot.css
+- Não usar bibliotecas externas
+- Não implementar IA aqui (isso vem no Prompt 5)
+- Não quebrar nada existente
+- Tudo deve respeitar o período global (Ano/Mês)
+
+---
+
+## 1) Conceito de Dívida (regra de negócio)
+Uma dívida pode ser:
+- Cartão de crédito
+- Empréstimo
+- Financiamento
+- Acordo
+- Boleto recorrente
+- Outros
+
+Cada dívida tem:
+- um **impacto mensal** (parcela mínima)
+- um **saldo total** (opcional)
+- um **vencimento mensal**
+- um **nível de risco**
+- uma **prioridade calculada**
+
+---
+
+## 2) Backend (Laravel)
+
+### 2.1 Migrations (criar)
+
+#### debt_types
+- id
+- name (string)  
+  Ex: Cartão, Empréstimo, Financiamento, Acordo, Boleto, Outros
+- created_at / updated_at
+
+#### debts
+- id
+- user_id (nullable por enquanto)
+- debt_type_id (FK debt_types)
+- name (string)  // "Nubank Crédito", "Empréstimo Banco X"
+- creditor (string nullable)
+- total_amount (decimal 12,2 nullable) // saldo total
+- monthly_minimum (decimal 12,2)       // parcela mínima
+- interest_rate (decimal 5,2 nullable) // % mensal ou anual (não usar ainda)
+- due_day (integer)                    // dia do vencimento (1–31)
+- start_date (date nullable)
+- end_date (date nullable)
+- status (string) // active, paid, renegotiating
+- notes (text nullable)
+- created_at / updated_at
+
+Índices:
+- debts(due_day)
+- debts(status)
+- debts(debt_type_id)
+
+---
+
+### 2.2 Seeders
+Criar seeders para:
+- debt_types:
+  - Cartão
+  - Empréstimo
+  - Financiamento
+  - Acordo
+  - Boleto
+  - Outros
+
+- debts (dados fake):
+  - 1 cartão de crédito
+  - 1 empréstimo
+  - 1 acordo
+  - 1 financiamento
+  - Datas e valores realistas
+  - Usar ano atual
+
+---
+
+### 2.3 Modelos
+Criar Models:
+- DebtType
+- Debt
+
+No model Debt, criar métodos computados:
+
+- getMonthlyImpactAttribute()
+  → retorna monthly_minimum
+
+- getIsDueThisMonthAttribute()
+  → verifica se o vencimento cai no mês ativo
+
+- getPriorityScoreAttribute()
+  → score simples baseado em:
+    - proximidade do vencimento
+    - valor da parcela mínima
+    - tipo da dívida
+
+Exemplo de regra (pode ajustar):
+- Base = 50
+- Se due_day <= hoje+5 dias → +30
+- Se tipo = Cartão → +20
+- Se monthly_minimum > 20% da renda mensal → +15
+
+⚠️ Não usar IA aqui, apenas regras determinísticas.
+
+---
+
+### 2.4 Controller
+Criar:
+DebtController
+
+Métodos:
+- index()
+- store()
+- update()
+- destroy()
+
+index() deve:
+- respeitar o período global (Ano/Mês)
+- retornar:
+  - lista de dívidas ativas
+  - totais:
+    - total_monthly_minimum
+    - total_debts_count
+  - resumo por tipo
+  - impacto percentual sobre entradas do mês
+
+---
+
+## 3) Integração com Entradas (Salário)
+Assuma que:
+- Entradas do mês vêm de transações (amount > 0)
+- Some todas as entradas do período ativo
+
+Calcular:
+- total_income_month
+- total_debt_minimum
+- debt_commitment_percent = (total_debt_minimum / total_income_month) * 100
+
+⚠️ Se não houver entrada cadastrada:
+- mostrar aviso na UI
+- não quebrar cálculo (evitar divisão por zero)
+
+---
+
+## 4) Frontend — Página Dívidas
+
+Arquivo:
+resources/js/Pages/Debts.vue
+
+### Cabeçalho
+- Título: "Dívidas"
+- Subtítulo: "Acompanhe vencimentos, impacto no mês e prioridades"
+
+---
+
+### Card Resumo (obrigatório)
+Card com:
+- Entradas do mês
+- Total de dívidas (mínimos)
+- Percentual comprometido
+- Sobra/Falta após dívidas
+
+Usar:
+- `.card`
+- `.kpi`
+- `.kpi.highlight` para Sobra/Falta
+
+---
+
+### Grupos por tipo de dívida
+Para cada tipo (Cartão, Empréstimo etc):
+- Título do grupo
+- Tabela/lista das dívidas daquele tipo
+
+Colunas:
+- Nome
+- Vencimento
+- Parcela mínima
+- Prioridade (score)
+- Status
+
+---
+
+### Prioridade visual
+- Mostrar score (0–100)
+- Usar badges simples:
+  - ≥80: “Alta”
+  - 50–79: “Média”
+  - <50: “Baixa”
+
+---
+
+### Ações
+Para cada dívida:
+- Editar
+- Excluir
+- Marcar como “Pago” (altera status)
+
+Botões globais:
+- “Adicionar dívida”
+- “Gerar plano do mês” (leva para IA, placeholder)
+
+---
+
+### Mobile
+- Mostrar dívidas como `.list-item`
+- Exibir:
+  - Nome
+  - Parcela mínima
+  - Vencimento
+  - Badge de prioridade
+
+---
+
+## 5) Formulário de Dívida (Modal)
+Campos:
+- Nome
+- Tipo (select)
+- Credor
+- Parcela mínima
+- Saldo total (opcional)
+- Dia de vencimento
+- Status
+- Observações
+
+Validações:
+- Nome obrigatório
+- Parcela mínima > 0
+- Dia 1–31
+
+---
+
+## 6) UX importante
+- Se não houver dívidas:
+  - mostrar estado vazio amigável
+- Se percentual comprometido > 80%:
+  - alerta visual (warn)
+- Tudo deve reagir à troca de Ano/Mês global
+
+---
+
+## 7) Critérios de aceite
+1) /debts carrega corretamente
+2) Dívidas seed aparecem
+3) Impacto no salário é calculado corretamente
+4) Score de prioridade aparece
+5) CRUD funciona sem reload total
+6) Mobile e desktop OK
+7) CSS consistente com FinPilot
+
+---
+
+## Entrega final
+- Código compilando
+- Banco migrado e seedado
+- UI funcional e limpa
+- Base sólida para IA (Prompt 5)

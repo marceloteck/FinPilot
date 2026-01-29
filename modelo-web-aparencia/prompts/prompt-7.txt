@@ -1,0 +1,187 @@
+# PROMPT 6/6 — FinPilot Finalização (Banco, Integrações, Multiusuário, Preparação SaaS)
+
+Você é um engenheiro de software fullstack sênior e arquiteto de sistemas.  
+Finalize o projeto FinPilot (Laravel + Inertia + Vue 3), consolidando tudo que foi desenvolvido nos PROMPTS 1 a 5.
+
+Este prompt NÃO cria novas features grandes, ele:
+- organiza
+- integra
+- padroniza
+- prepara o projeto para virar um SaaS profissional
+
+---
+
+## 1) Objetivo final do projeto
+O FinPilot é um **Gerenciador Financeiro Inteligente**, com:
+- controle de transações
+- gestão de dívidas
+- comparação renda × compromissos
+- assistente inteligente para plano de pagamento
+- visualizações mensais e anuais
+- personalização (tema, acessibilidade, views)
+- base sólida para IA futura e monetização
+
+---
+
+## 2) Organização do Banco de Dados
+Revise todas as migrations criadas nos prompts anteriores e garanta:
+
+### Tabelas principais (confirmar existência)
+- users
+- categories
+- statuses
+- transactions
+- views
+- debt_types
+- debts
+- ai_preferences
+- ai_plans
+- ai_plan_items
+- ai_feedback
+
+### Regras importantes
+- Todas as tabelas devem conter `user_id` (nullable por enquanto)
+- Preparar todos os relacionamentos Eloquent
+- Não remover dados seed existentes
+- Garantir integridade referencial (FKs onde aplicável)
+
+---
+
+## 3) Padrão Multiusuário (SaaS-ready)
+Mesmo que o MVP rode com um único usuário:
+
+### Backend
+- Todas as queries devem estar preparadas para filtrar por `user_id`
+- Se `user_id` estiver null, tratar como usuário padrão
+- Criar um helper ou scope:
+  - `scopeForUser($query, $userId = null)`
+
+### Frontend
+- Não assumir dados globais
+- Tudo vem via Inertia props
+
+---
+
+## 4) Centralização de Preferências do Usuário
+Consolidar:
+- Tema
+- Fonte
+- Contraste
+- Período ativo (ano/mês)
+- Estratégia do Assistente IA
+
+### Estratégia correta
+- Frontend:
+  - localStorage (rápido, offline-friendly)
+- Backend:
+  - tabela ai_preferences (para IA)
+  - futura tabela user_preferences (NÃO criar agora, só deixar preparado)
+
+⚠️ Não duplicar lógica.
+
+---
+
+## 5) Integração Final do Período Global
+Garanta que:
+- Dashboard
+- Transações
+- Dívidas
+- IA
+- Relatórios
+
+TODOS:
+- respeitam `active_year`
+- respeitam `active_month`
+- não quebram se o ano virar
+- mostram estado vazio amigável quando não há dados
+
+Criar helper backend:
+- `PeriodContext::current()`  
+  → retorna year, month, start_date, end_date
+
+---
+
+## 6) Relatórios (base simples)
+Sem gráficos complexos ainda.
+
+### Página Reports.vue
+- Resumo anual:
+  - total de entradas
+  - total de gastos
+  - total pago em dívidas
+- Tabela mês a mês:
+  - entradas
+  - gastos
+  - dívidas
+  - sobra/falta
+
+⚠️ Sem chart JS agora — apenas tabelas e números.
+
+---
+
+## 7) Segurança e Boas Práticas
+- Validar todos os inputs (Request classes)
+- Confirmar exclusões (modal simples)
+- Evitar divisão por zero
+- Nunca prometer retorno financeiro em IA
+- Código limpo, sem lógica duplicada
+
+---
+
+## 8) Preparação para Monetização (não implementar cobrança)
+Apenas estrutural:
+
+### Marcar no código (comentários):
+- Onde entraria:
+  - planos Free / Pro
+  - limites de importação
+  - recursos premium (IA avançada, Open Finance)
+
+### Criar enum ou constante:
+- FeatureFlags (ex: AI_ENABLED, IMPORT_ENABLED)
+
+⚠️ Não bloquear nada agora, só deixar comentado.
+
+---
+
+## 9) Experiência do Usuário (polimento final)
+- Estados vazios amigáveis
+- Textos claros (PT-BR)
+- Nenhuma tela “em branco”
+- Mobile tão funcional quanto desktop
+
+---
+
+## 10) Documentação mínima (obrigatória)
+Criar README.md com:
+- Visão geral do FinPilot
+- Stack usada
+- Como rodar local
+- Estrutura do projeto
+- Onde fica:
+  - CSS
+  - Layout
+  - Assistente IA
+  - Período global
+
+---
+
+## 11) Critérios de aceite FINAL
+✅ Projeto sobe sem erro  
+✅ Todas as páginas funcionam  
+✅ Período global funciona em todo o sistema  
+✅ Assistente IA gera e confirma planos  
+✅ Transações e Dívidas estão integradas  
+✅ Layout consistente (desktop + mobile)  
+✅ Código preparado para SaaS  
+
+---
+
+## Resultado esperado
+Um MVP **completo, profissional e escalável**, pronto para:
+- uso pessoal
+- validação com usuários
+- futura monetização
+- evolução da IA
+
+Finalize com atenção aos detalhes e qualidade de código.

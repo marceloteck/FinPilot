@@ -1,0 +1,153 @@
+# PROMPT EXTRA — FinPilot: Criar Testes, Rodar, Ver Resultados e Corrigir Erros (Laravel + Inertia)
+
+Você é um engenheiro de software sênior focado em qualidade.  
+Sua missão é **criar testes automatizados**, **executar a suíte**, **inspecionar falhas** e **corrigir os erros** até o projeto ficar verde (passando).
+
+⚠️ Regras
+- Não remover features. Corrigir mantendo o comportamento.
+- Preferir correções mínimas e seguras.
+- Se um teste falhar por causa de seed/dados, ajuste o teste ou a fábrica de dados, não “desative” o teste.
+- Priorize testes de backend (Feature/Unit). Testes de front-end são opcionais nesta etapa.
+- Os testes devem ser determinísticos (não depender de data/hora real sem controle).
+
+---
+
+## 1) Preparação do ambiente de testes
+1. Garanta que o ambiente de teste usa SQLite em memória ou database separada:
+   - Configure `phpunit.xml` para `DB_CONNECTION=sqlite` e `DB_DATABASE=:memory:` (ou um arquivo sqlite de teste).
+2. Ajuste `APP_ENV=testing`, `CACHE_DRIVER=array`, `QUEUE_CONNECTION=sync`.
+3. Certifique que migrations rodam em testes.
+
+---
+
+## 2) Criar Factories (se não existirem)
+Crie factories para:
+- Category
+- Status
+- Transaction
+- DebtType
+- Debt
+- AiPreference
+- AiPlan
+- AiPlanItem
+- AiFeedback
+
+✅ Boas práticas:
+- Use dados coerentes (valores positivos/negativos corretos)
+- Datas controladas (use Carbon::parse fixo)
+- Relacionamentos consistentes
+
+---
+
+## 3) Criar Testes Feature (HTTP)
+Crie testes cobrindo rotas e comportamentos críticos:
+
+### 3.1 Rotas básicas carregam (Inertia)
+- GET /
+- GET /transactions
+- GET /debts
+- GET /ai
+- GET /reports
+- GET /settings
+
+Cada teste deve:
+- esperar status 200
+- validar que é resposta Inertia
+- validar componente correto (Home, Transactions, Debts, AI, Reports, Settings)
+
+### 3.2 Transações: CRUD
+- POST /transactions cria transação
+- PUT /transactions/{id} atualiza
+- DELETE /transactions/{id} remove
+- GET /transactions aplica filtro de ano/mês e retorna só do período
+
+Inclua testes para:
+- validação: amount obrigatório, date válido, description obrigatório
+- filtro por search
+- filtro por category_id e status_id
+
+### 3.3 Dívidas: CRUD + resumo
+- POST /debts cria dívida
+- PUT /debts/{id} atualiza
+- DELETE /debts/{id} remove
+- GET /debts retorna:
+  - debts list
+  - totals (mínimos)
+  - percent comprometido (se renda existir)
+
+Teste:
+- sem renda → percent não quebra e mostra 0 ou null de forma segura
+- com renda (crie transactions positivas) → percent calculado corretamente
+
+### 3.4 IA: gerar plano + confirmar
+- POST /ai/generate cria draft do período
+- POST /ai/confirm confirma plano e salva confirmed_amount
+- POST /ai/feedback troca estratégia e persiste ai_preferences
+
+Valide:
+- ao gerar, cria ai_plans e ai_plan_items
+- itens bucket mandatory somam mínimos
+- status muda para confirmed
+- feedback é registrado
+
+---
+
+## 4) Testes Unit (domínio)
+### 4.1 PaymentPlanService
+Crie unit tests para:
+- cálculo de income do período
+- cálculo de available
+- ordenação avalanche vs snowball
+- reason_json contém motivos e score
+
+Use datas fixas com Carbon::setTestNow() para evitar flakiness.
+
+---
+
+## 5) Rodar Testes e Corrigir Erros
+1) Execute:
+- `php artisan test`
+ou
+- `vendor/bin/phpunit`
+
+2) Para cada falha:
+- leia mensagem e stacktrace
+- identifique se é:
+  - rota faltando
+  - controller retornando props erradas
+  - validação errada
+  - migration/fk faltando
+  - factory quebrada
+  - erro de período global
+- corrija o código fonte e/ou os testes
+- rode novamente até ficar tudo verde
+
+✅ Importante:
+- Se houver lógica dependente do “período global” via localStorage, em testes do backend use defaults do servidor:
+  - Year = ano atual ou Carbon::now()->year (com TestNow fixado)
+  - Month = “all” ou month atual
+- Garanta que o backend não dependa do front para filtrar.
+
+---
+
+## 6) Checklist de correções comuns
+- Inertia middleware não compartilhando props esperadas
+- Controllers retornando componente errado
+- FKs quebrando em SQLite (precisa `->constrained()->nullOnDelete()`)
+- Decimal vs integer e casting no model
+- Divisão por zero no cálculo percent
+- “month = all” sendo tratado como null incorretamente
+- Datas sem timezone fixo causando mismatch
+
+---
+
+## 7) Entrega final
+- Todas as factories criadas
+- Testes Feature + Unit criados
+- Suite passando (verde)
+- Código corrigido com qualidade
+- Pequena nota no README:
+  - como rodar testes
+  - como funciona o ambiente de testing
+
+Implemente agora.

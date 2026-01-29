@@ -1,0 +1,37 @@
+# PROMPT — FinPilot CSS (Design System Oficial)
+
+Você é um engenheiro de software front-end sênior.  
+Implemente o CSS oficial do projeto FinPilot em um projeto Laravel + Inertia + Vue 3 já existente.
+
+## Objetivo
+Criar um design system elegante, claro, profissional e responsivo, com:
+- Tema Claro / Escuro / Sistema
+- Acessibilidade (tamanho de fonte e contraste)
+- Layout desktop + mobile
+- Visual limpo (nem escuro demais nem branco demais)
+
+## Arquivo
+Crie o arquivo:
+resources/css/finpilot.css
+
+Depois:
+- Importe esse CSS no build do projeto (via resources/css/app.css ou Vite)
+
+---
+
+## Regras IMPORTANTES
+1) NÃO remover nenhum CSS existente do projeto, apenas adicionar.
+2) Este CSS será global.
+3) A classe `.list-item` deve ficar **EXATAMENTE** como abaixo (sem alterações):
+
+```css
+.list-item{
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--surface);
+}

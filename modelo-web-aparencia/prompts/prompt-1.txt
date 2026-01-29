@@ -1,0 +1,209 @@
+# PROMPT 1/6 — FinPilot (Laravel + Inertia + Vue) — App Shell + Tema + Acessibilidade + Período Global
+
+Você é um engenheiro de software sênior. Trabalhe em um projeto Laravel já existente com Inertia.js + Vue 3 (estrutura já pronta). Implemente a base visual e estrutural do app (App Shell), com suporte completo a tema e acessibilidade, e um seletor global de período (Ano/Mês) que será usado por todo o site.
+
+## Objetivo desta etapa
+1) Implementar o layout global (desktop + mobile) com:
+   - Sidebar no desktop
+   - Bottom navigation no mobile
+   - Topbar com título, subtítulo, seletor global de Ano/Mês e botões de ação
+2) Implementar tema (Claro/Escuro/Sistema) e acessibilidade (Fonte: normal/grande/extra; Contraste: normal/alto) usando:
+   - atributos no elemento `<html>`: data-theme, data-font, data-contrast
+   - persistência em localStorage (chave: "finpilot_prefs_v1")
+   - JS utilitário independente (sem dependências externas)
+3) Criar base de rotas/páginas (apenas placeholders agora), para navegação:
+   - Home (Dashboard)
+   - Transações
+   - Dívidas
+   - IA
+   - Metas
+   - Relatórios
+   - Configurações
+4) Implementar seletor global de Ano/Mês (apenas UI + estado persistido por enquanto):
+   - Ano ativo (obrigatório)
+   - Mês ativo (opcional, default "Todos")
+   - Botão "Hoje" volta para ano/mês atuais
+   - Persistir ano/mês em localStorage (pode ser na mesma chave de preferências ou outra)
+   - Expor ano/mês para todas as páginas via Inertia shared props (ex: use page.props)
+
+⚠️ IMPORTANTE
+- Não remover nada existente. Adicionar de forma organizada.
+- O layout deve ser responsivo e elegante, “meio termo” (nem escuro demais nem branco demais).
+- Implementar suporte completo ao CSS do design que já definimos (usar como base o CSS abaixo).
+- Manter o bloco .list-item exatamente como está no CSS (ver abaixo).
+
+---
+
+## Estrutura de arquivos esperada (criar/alterar)
+- resources/css/finpilot.css          (novo: CSS base do FinPilot)
+- resources/js/finpilot/theme.js      (novo: tema + acessibilidade + persistência)
+- resources/js/finpilot/period.js     (novo: ano/mês global + persistência)
+- resources/js/finpilot/index.js      (novo: entry que importa theme + period)
+- resources/js/Layouts/AppLayout.vue  (novo ou alterar: shell do app)
+- resources/js/Components/BottomNav.vue (novo)
+- resources/js/Components/SidebarNav.vue (novo)
+- resources/js/Components/Topbar.vue     (novo)
+- resources/js/Pages/Home.vue         (novo placeholder)
+- resources/js/Pages/Transactions.vue (novo placeholder)
+- resources/js/Pages/Debts.vue        (novo placeholder)
+- resources/js/Pages/AI.vue           (novo placeholder)
+- resources/js/Pages/Goals.vue        (novo placeholder)
+- resources/js/Pages/Reports.vue      (novo placeholder)
+- resources/js/Pages/Settings.vue     (novo placeholder)
+- routes/web.php                      (alterar para adicionar rotas)
+- app/Http/Controllers/...            (criar controladores simples)
+- app/Providers/AppServiceProvider.php ou Inertia middleware (compartilhar props)
+
+Se o projeto já usa uma pasta diferente, adapte mantendo padrão do projeto.
+
+---
+
+## Design / CSS (FinPilot)
+Crie resources/css/finpilot.css com o CSS completo abaixo (use exatamente este CSS como base).
+Depois, garanta que o CSS seja carregado no build (Vite) e aplicado globalmente.
+
+### CSS COMPLETO (copiar/colar)
+(cole aqui exatamente o CSS que segue, e garanta que a classe `.list-item` permaneça exatamente com este bloco:)
+
+/* ... COLE O CSS COMPLETO AQUI ... */
+
+✅ Observação: a regra `.list-item` deve ficar EXATAMENTE assim:
+.list-item{
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--surface);
+}
+
+---
+
+## Tema + Acessibilidade (JS)
+Crie resources/js/finpilot/theme.js
+- Lógica: preferências (theme/font/contrast) com defaults:
+  - theme: "system"
+  - font: "md"
+  - contrast: "normal"
+- Persistir em localStorage: "finpilot_prefs_v1"
+- Aplicar em document.documentElement:
+  - data-theme = theme
+  - data-font = font
+  - data-contrast = contrast
+- Deve “auto iniciar” ao carregar o app.
+
+Além disso, oferecer suporte a UI com selects (se existirem):
+- #themeSelect (system/light/dark)
+- #fontSelect (md/lg/xl)
+- #contrastSelect (normal/high)
+Se não existirem, não quebrar.
+
+Implementar atalho opcional:
+- tecla "T" alterna theme: system -> light -> dark
+
+---
+
+## Período global (Ano/Mês) (JS)
+Crie resources/js/finpilot/period.js
+- Guardar:
+  - active_year (number)
+  - active_month (string: "all" | "01".."12") ou algo equivalente
+- Defaults:
+  - active_year = ano atual
+  - active_month = "all"
+- Persistir em localStorage (pode ser chave separada "finpilot_period_v1")
+- Expor funções:
+  - getPeriod()
+  - setYear(year)
+  - setMonth(month)
+  - resetToToday()
+- Emitir evento custom no window quando mudar (ex: "finpilot:period-changed") para as páginas atualizarem se necessário.
+
+---
+
+## Inertia Shared Props (Laravel)
+Compartilhe para todas as páginas:
+- uiPrefs (theme/font/contrast) opcional
+- period (activeYear, activeMonth)
+Como:
+- via HandleInertiaRequests middleware (preferível) ou AppServiceProvider::boot()
+
+---
+
+## App Layout (Vue)
+Crie/atualize AppLayout.vue com a estrutura:
+
+- wrapper `.app`
+- sidebar desktop:
+  - logo "FP"
+  - links do menu (Home, Transações, Dívidas, IA, Metas, Relatórios, Config)
+  - botão “Personalizar Dashboard” (placeholder por enquanto)
+- topbar:
+  - título + subtítulo (por página)
+  - seletor global de Ano/Mês:
+    - Ano select: lista (ano atual e alguns próximos/anteriores, ex: atual-2 até atual+1)
+    - Mês select: Todos + Jan..Dez
+    - botão "Hoje"
+  - botões "Importar" (placeholder) e "Gerar plano (IA)" (link para IA)
+- main content: slot para páginas Inertia
+- bottom nav mobile:
+  - Home, Transações, Dívidas, IA, Config
+
+### Requisitos de UX
+- Desktop: sidebar fixa (sticky) e conteúdo scroll no main
+- Mobile: esconder sidebar e mostrar bottom-nav
+- Deve funcionar bem com o CSS fornecido
+
+---
+
+## Rotas e Páginas (Laravel + Inertia)
+Crie rotas GET para:
+- / (Home)
+- /transactions
+- /debts
+- /ai
+- /goals
+- /reports
+- /settings
+
+Cada rota deve renderizar uma Page Vue com título/subtítulo adequado.
+
+Exemplo de subtítulos:
+- Home: "Visão geral do seu mês e plano de ação"
+- Transações: "Registre, filtre e importe seus gastos e entradas"
+- Dívidas: "Acompanhe vencimentos, mínimos e priorização"
+- IA: "Sugestões com confirmação • aprende com você"
+- Metas: "Orçamento e objetivos"
+- Relatórios: "Anual e mensal • evolução e tendências"
+- Config: "Tema, acessibilidade e preferências"
+
+---
+
+## Integração Vite
+- Garanta que finpilot.css seja importado no CSS principal (resources/css/app.css) ou configurado no Vite.
+- Garanta que resources/js/finpilot/index.js seja importado no app.js (Inertia entry) para inicializar theme + period.
+- Não quebrar build.
+
+---
+
+## Critérios de aceite
+1) Rodar `npm run dev` sem erros e abrir páginas.
+2) Layout responsivo conforme descrito.
+3) Trocar tema via select (#themeSelect) altera data-theme em <html> e persiste em localStorage.
+4) Ajustar fonte/contraste via select funciona e persiste.
+5) Seletor Ano/Mês altera o estado global e persiste.
+6) Todas as páginas carregam dentro do AppLayout.
+
+---
+
+## Entregue também
+- Um README curto (ou comentário no código) indicando:
+  - onde fica o CSS
+  - onde fica o JS de tema/período
+  - como adicionar select de tema em Settings no futuro
+
+Implemente com código limpo, nomes claros e sem duplicações.
+
+

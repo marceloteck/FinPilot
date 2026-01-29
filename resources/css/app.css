@@ -1,0 +1,9 @@
+@import 'Scrollbar.css';
+@import 'fontes.css';
+
+html {
+    scroll-behavior: smooth;
+}
+.imgIndex {
+     height: 500px !important;
+}

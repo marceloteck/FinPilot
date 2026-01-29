@@ -1,0 +1,168 @@
+
+✅ **Esse prompt você cola com o CSS completo logo abaixo**, exatamente como combinamos.
+
+---
+
+# 🔹 PROMPT 2/6 — Dashboard (Home) + Configurações
+
+👉 **Agora o PROMPT 2**, já assumindo que:
+- CSS está pronto
+- Layout base (AppLayout) já existe (Prompt 1)
+
+```md
+# PROMPT 2/6 — FinPilot Dashboard (Home) + Settings
+
+Você é um engenheiro de software fullstack sênior.  
+Continue o desenvolvimento do projeto FinPilot (Laravel + Inertia + Vue 3).
+
+## Objetivo
+Implementar:
+1) Página **Home (Dashboard)** funcional
+2) Página **Configurações (Settings)** funcional
+Usando o CSS oficial do FinPilot já integrado.
+
+---
+
+## 1️⃣ Página HOME (Dashboard)
+
+Arquivo:
+resources/js/Pages/Home.vue
+
+### Estrutura da página
+Use o AppLayout existente.
+
+### Topo
+- Título: "Dashboard"
+- Subtítulo: "Visão geral do seu mês e plano de ação"
+
+---
+
+### Cards principais (obrigatórios)
+Crie cards com valores mockados (por enquanto):
+
+1) Entradas do mês  
+2) Gastos do mês  
+3) Dívidas do mês (mínimos)  
+4) Sobra / Falta do mês (card em destaque)
+
+Cada card deve usar:
+- `.card`
+- `.kpi`
+- `.kpi.highlight` (para Sobra/Falta)
+
+---
+
+### Barra “Salário vs Compromissos”
+- Barra horizontal mostrando:
+  - Dívidas
+  - Fixos
+  - Variáveis
+- Percentual comprometido
+
+---
+
+### Alertas automáticos (mock)
+Use `.alert`:
+- aviso de vencimento próximo
+- assinatura detectada
+- meta cumprida
+
+---
+
+### Tabela “Dívidas deste mês” (preview)
+- Mostrar apenas 3 dívidas mockadas
+- Colunas:
+  - Credor
+  - Tipo
+  - Vencimento
+  - Parcela mínima
+  - Prioridade (score)
+  - Status
+- Botões:
+  - “Gerar plano de pagamento”
+  - “Adicionar dívida”
+
+---
+
+### Painel “Assistente IA”
+Blocos:
+1) Obrigatório  
+2) Prioritário  
+3) Se sobrar  
+
+Cada bloco com:
+- descrição
+- valor sugerido
+- badge (prioridade)
+
+Botões:
+- Confirmar plano
+- Ajustar valores
+
+---
+
+### Lista “Transações recentes”
+- 3 itens mockados
+- Um deles com status “Revisar”
+- Usar `.list-item`
+
+---
+
+## 2️⃣ Página CONFIGURAÇÕES (Settings)
+
+Arquivo:
+resources/js/Pages/Settings.vue
+
+### Seções obrigatórias
+
+#### Aparência
+- Select Tema:
+  - Sistema
+  - Claro
+  - Escuro
+  (id="themeSelect")
+
+#### Acessibilidade
+- Select Fonte:
+  - Normal
+  - Grande
+  - Extra
+  (id="fontSelect")
+
+- Select Contraste:
+  - Normal
+  - Alto
+  (id="contrastSelect")
+
+⚠️ Esses selects devem funcionar automaticamente com o JS de tema (não duplicar lógica).
+
+---
+
+### Preferências futuras (placeholder)
+- Texto explicando que outras opções serão adicionadas
+- Não implementar lógica agora
+
+---
+
+## Rotas
+Garanta que:
+- / → Home
+- /settings → Settings
+
+---
+
+## Critérios de aceite
+1) Home carrega corretamente no AppLayout
+2) Cards, alertas e listas usam o CSS oficial
+3) Settings altera tema, fonte e contraste em tempo real
+4) Preferências persistem após reload
+5) Mobile e desktop funcionam corretamente
+
+---
+
+## Importante
+- Não conectar banco ainda
+- Não usar dados reais
+- Não quebrar nenhuma parte existente
+
+Implemente com código limpo, componentes simples e sem overengineering.

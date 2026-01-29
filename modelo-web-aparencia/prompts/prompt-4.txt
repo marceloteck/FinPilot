@@ -1,0 +1,270 @@
+# PROMPT 3/6 — FinPilot Transações (Tabela Notion-like + Filtros + Views + Ano/Mês Global)
+
+Você é um engenheiro de software fullstack sênior. Continue o projeto FinPilot (Laravel + Inertia + Vue 3).
+
+## Objetivo desta etapa
+Implementar a página **Transações** com:
+1) Tabela profissional (desktop) + lista (mobile)
+2) Filtros rápidos + filtros avançados (MVP: AND)
+3) "Views" salvas (visões) com: filtros, ordenação e colunas visíveis
+4) Integração com seletor global **Ano/Mês** (period) — o site inteiro já tem isso, aqui deve ser respeitado
+5) CRUD básico de transações (sem importação CSV ainda)
+6) Categorias e status básicos para funcionar
+
+⚠️ Regras:
+- Não quebrar layout/AppLayout existente.
+- Usar o CSS oficial finpilot.css já integrado.
+- Não usar bibliotecas externas de tabela.
+- Não overengineer: faça um MVP sólido e extensível.
+- Mobile: em vez de table grande, mostrar como cards (usando `.list-item`).
+
+---
+
+## 1) Backend (Laravel) — Modelos, Migrations, Controllers
+
+### 1.1 Migrations (criar)
+Crie migrations para:
+
+#### categories
+- id
+- user_id (nullable por enquanto; deixe pronto para multiusuário)
+- name (string)
+- color (string, nullable)  // opcional, não use ainda
+- is_hidden (boolean default false)
+- created_at/updated_at
+
+#### statuses
+- id
+- user_id (nullable)
+- name (string)  // "Confirmado", "Revisar", "Pendente"
+- created_at/updated_at
+
+#### transactions
+- id
+- user_id (nullable)
+- date (date)
+- description (string)
+- amount (decimal 12,2)  // negativo = saída; positivo = entrada (MVP)
+- account_name (string nullable) // por enquanto simples
+- category_id (nullable FK categories)
+- status_id (nullable FK statuses)
+- notes (text nullable)
+- created_at/updated_at
+
+#### views (visões salvas para tabela de transações)
+- id
+- user_id (nullable)
+- entity (string)  // "transactions"
+- name (string)
+- is_default (boolean default false)
+- config_json (json) // { filters, sort, columns }
+- created_at/updated_at
+
+✅ Use FKs onde fizer sentido (category_id, status_id).
+✅ user_id pode ficar nullable (MVP), mas prepare para multiusuário.
+✅ Adicione índices úteis: transactions(date), transactions(category_id), views(entity).
+
+### 1.2 Seeders (criar/atualizar)
+Crie seeder para inserir:
+- categories padrão: "Renda", "Mercado", "Transporte", "Moradia", "Assinaturas", "Lazer", "Saúde", "Outros"
+- statuses padrão: "Confirmado", "Revisar", "Pendente"
+- 15 transações fake distribuídas em alguns meses do ano atual (para testar filtros anuais/mensais)
+- 2-3 views padrão para entity="transactions":
+  - "Este mês" (filtro mês ativo)
+  - "Revisar" (status=Revisar)
+  - "Tudo (ano)" (somente ano ativo)
+
+⚠️ As views podem ser criadas com config_json simples (veja seção config abaixo).
+
+### 1.3 Controller e Rotas
+Crie:
+- TransactionController
+  - index() -> lista + filtros + view ativa
+  - store()
+  - update()
+  - destroy()
+
+Rotas:
+- GET  /transactions
+- POST /transactions
+- PUT  /transactions/{transaction}
+- DELETE /transactions/{transaction}
+
+Crie também:
+- ViewController (somente para entity transactions)
+  - store() (salvar view)
+  - update() (atualizar view)
+  - destroy() (excluir view)
+  - setDefault() (opcional: marcar default)
+
+Rotas:
+- POST /views
+- PUT /views/{view}
+- DELETE /views/{view}
+
+---
+
+## 2) Lógica de filtros (MVP)
+A página deve sempre respeitar o período global:
+- activeYear obrigatório
+- activeMonth opcional:
+  - "all" => filtra somente pelo ano
+  - "01".."12" => filtra ano + mês
+
+✅ No backend, aplique esse filtro de data SEMPRE no index().
+
+Além do período global, suportar filtros adicionais vindos da UI:
+- search (texto em description)
+- category_id
+- status_id
+- min_amount / max_amount
+- date_from / date_to (opcional; mas ainda respeita ano/mês global como “limite”)
+- direction (income/expense opcional; baseado em amount >=0)
+
+Ordenação:
+- sort_by: date|amount|description
+- sort_dir: asc|desc
+
+Paginação:
+- page size 20
+
+Retorne via Inertia:
+- transactions (paginado)
+- categories
+- statuses
+- views disponíveis
+- activeView (a view selecionada)
+- period (já vem via shared props, mas garantir no payload)
+
+---
+
+## 3) Config JSON das Views
+Defina padrão:
+
+config_json = {
+  "filters": {
+    "search": "",
+    "category_id": null,
+    "status_id": null,
+    "min_amount": null,
+    "max_amount": null
+  },
+  "sort": { "by": "date", "dir": "desc" },
+  "columns": {
+    "date": true,
+    "description": true,
+    "amount": true,
+    "account_name": true,
+    "category": true,
+    "status": true,
+    "notes": false
+  }
+}
+
+✅ Ao aplicar uma view:
+- preencher os inputs de filtro
+- aplicar sort e colunas visíveis
+
+---
+
+## 4) Frontend — Página Transactions (Vue + Inertia)
+
+Arquivo:
+resources/js/Pages/Transactions.vue
+
+### Layout e cabeçalho
+- Título: "Transações"
+- Subtítulo: "Registre, filtre e importe seus gastos e entradas"
+
+No topo da página:
+- Dropdown “View” (visões):
+  - lista views
+  - botão “Salvar visão”
+  - botão “Salvar como…”
+  - botão “Excluir visão” (se não for default)
+- Filtros rápidos:
+  - Busca por descrição
+  - Categoria (select)
+  - Status (select)
+- Botão “Filtro avançado” abre modal/painel:
+  - min/max valor
+  - direção (entrada/saída)
+  - intervalo de datas (opcional)
+
+### Criação rápida (MVP)
+No topo ou em um card:
+- botão “+ Adicionar” abre modal simples:
+  - date
+  - description
+  - amount (positivo/negativo)
+  - category
+  - status
+  - account_name
+  - notes
+- Ao salvar: POST /transactions e atualizar lista
+
+### Tabela (desktop)
+Use estrutura semelhante ao design:
+- container `.card`
+- tabela com colunas (respeitar columns visíveis da view)
+Colunas base:
+- Data
+- Descrição
+- Valor
+- Conta
+- Categoria
+- Status
+- Notas (opcional)
+
+Cada linha deve ter:
+- edição rápida (MVP: botão “Editar” abre modal)
+- botão “Excluir” com confirmação simples
+
+Valor:
+- mostrar “+” em entradas e cor verde
+- saídas em cor normal/vermelha leve (não precisa criar novas cores; usar var ok para positivo)
+
+### Mobile (lista)
+Para telas menores:
+- renderizar transações como `.list-item` (cards)
+- mostrar: descrição, data, categoria/status e valor
+
+### Rodapé
+- Paginação (anterior/próxima)
+
+---
+
+## 5) Componentização (recomendado)
+Para deixar limpo, crie componentes:
+- resources/js/Components/Transactions/TransactionFormModal.vue
+- resources/js/Components/Transactions/FiltersBar.vue
+- resources/js/Components/Transactions/ViewsDropdown.vue
+
+Mas não exagere — mantenha simples.
+
+---
+
+## 6) UX importante
+- Se não houver transações no ano/mês ativo, mostrar estado vazio amigável com botão:
+  - “Adicionar transação”
+  - “Voltar para ano atual” (chama resetToToday do period.js)
+- Se a view ativa tiver filtros que zeram o resultado, mostrar:
+  - “Limpar filtros”
+
+---
+
+## 7) Critérios de aceite
+1) /transactions funciona com dados seed e lista transações do ano/mês ativo.
+2) Filtros rápidos e avançados funcionam.
+3) Views salvas persistem no banco e podem ser aplicadas.
+4) Colunas visíveis mudam conforme view (mostrar/ocultar).
+5) CRUD: adicionar/editar/excluir funciona sem refresh total (Inertia).
+6) Mobile mostra lista em cards (usando `.list-item` exatamente).
+
+---
+
+## Entrega final
+- Código compilando sem erros
+- Rotas e controllers funcionando
+- Seeders ok
+- UI consistente com finpilot.css

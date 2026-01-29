@@ -1,0 +1,302 @@
+# PROMPT 5/6 — FinPilot Assistente IA (Plano de Dívidas + Simulações + Confirmação + Aprendizado)
+
+Você é um engenheiro de software fullstack sênior.  
+Continue o projeto FinPilot (Laravel + Inertia + Vue 3).
+
+## Objetivo desta etapa
+Implementar o módulo **Assistente IA** (sem usar LLM paga), com:
+1) Geração de **Plano de Pagamento do Mês** (obrigatório / prioritário / se sobrar)
+2) **Score de prioridade** aprimorado (ainda determinístico) + explicações
+3) Simulações rápidas:
+   - “Se eu pagar +R$X por mês, quito em quanto tempo?”
+   - “Qual dívida cai primeiro?”
+4) Fluxo de confirmação:
+   - IA sugere -> usuário confirma -> salva “plano confirmado”
+5) Aprendizado (MVP):
+   - registrar feedback do usuário (ex: preferir snowball vs avalanche)
+   - ajustar pesos do score por usuário (sem ML pesado)
+6) Tudo respeitando o período global (Ano/Mês)
+
+⚠️ Regras:
+- NÃO usar serviços pagos/LLM nesta etapa.
+- Pode usar apenas matemática/regras + preferências do usuário.
+- Não quebrar CSS/layout existente.
+- Não overengineer: faça o suficiente para ser “inteligente” e evolutivo.
+- Sistema precisa ser seguro: nunca prometer ganhos em investimento; foco é quitação/reserva.
+
+---
+
+## 1) Conceito do Assistente IA
+O Assistente deve produzir 3 blocos:
+
+### 1) Obrigatório
+- soma dos mínimos (monthly_minimum) de todas as dívidas ativas do período
+- inclui dívidas vencendo muito próximo (ex: <= 5 dias) destacadas
+- sempre recomendado pagar este bloco primeiro
+
+### 2) Prioritário
+- pega o “dinheiro disponível extra” do mês e aloca para dívidas de maior prioridade
+- deve suportar dois modos:
+  - avalanche (maior juros/risco primeiro)
+  - snowball (menor saldo primeiro)
+Como MVP: usar avalanche como padrão, e snowball se o usuário escolher.
+
+### 3) Se sobrar
+- se sobrar caixa:
+  - primeiro: reserva de emergência
+  - depois: objetivos
+  - investimento só como opção “educativa” (sem sugestão de ativos)
+
+---
+
+## 2) Backend (Laravel)
+
+### 2.1 Migrations (criar)
+
+#### ai_preferences (por usuário)
+- id
+- user_id (nullable por enquanto)
+- payoff_strategy (string) default "avalanche"  // avalanche|snowball
+- risk_tolerance (string) default "normal"      // low|normal|high (MVP não precisa aplicar muito)
+- weights_json (json) nullable                  // pesos do score por usuário
+- created_at/updated_at
+
+weights_json exemplo:
+{
+  "due_soon": 30,
+  "is_card": 20,
+  "min_over_income": 15,
+  "high_min": 10,
+  "renegotiating": 10
+}
+
+#### ai_plans (plano gerado/confirmado por período)
+- id
+- user_id (nullable)
+- year (integer)
+- month (integer nullable) // se active_month="all", permitir null e tratar como anual
+- status (string) default "draft"  // draft|confirmed|archived
+- summary_json (json)             // totais e parâmetros usados
+- created_at/updated_at
+
+#### ai_plan_items (itens do plano)
+- id
+- ai_plan_id (FK)
+- debt_id (FK)
+- bucket (string) // mandatory|priority|overflow
+- suggested_amount (decimal 12,2)
+- confirmed_amount (decimal 12,2 nullable)
+- reason_json (json) // explicações do porquê recebeu esse valor
+- created_at/updated_at
+
+#### ai_feedback (aprendizado)
+- id
+- user_id (nullable)
+- year (integer)
+- month (integer nullable)
+- action (string) // confirm_plan|adjust_amount|change_strategy|dismiss_suggestion
+- payload_json (json)
+- created_at/updated_at
+
+---
+
+### 2.2 Serviços de domínio (criar)
+Crie um service class bem organizado:
+app/Services/AI/PaymentPlanService.php
+
+Responsabilidades:
+- gerar plano para (year, month, activeMonth)
+- calcular:
+  - incomeMonth (somando transactions.amount>0 no período)
+  - expensesMonth (transactions.amount<0 opcional)
+  - debtMinimumTotal
+  - available = incomeMonth - expensesMonth - debtMinimumTotal (MVP pode usar: incomeMonth - debtMinimumTotal se ainda não houver despesas boas)
+- montar plano:
+  - bucket mandatory: cada dívida recebe suggested_amount = monthly_minimum
+  - bucket priority: distribuir “extra” por score
+  - bucket overflow: se ainda sobrar, sugerir reserva (não vinculado a dívida) -> como item especial sem debt_id (opcional) OU apenas no summary_json
+
+Score:
+- Base 50
+- + due_soon (se vencimento dentro de 5 dias do “hoje” do período) -> +peso
+- + is_card (debt_type = Cartão) -> +peso
+- + min_over_income (monthly_minimum > 20% da renda do mês) -> +peso
+- + status renegotiating -> +peso
+- + high_min (monthly_minimum alto) -> +peso leve
+
+Strategy:
+- avalanche: ordenar por score desc
+- snowball: ordenar por total_amount asc (se null, usar score)
+
+Reasons:
+Para cada ai_plan_item, preencher reason_json com 2-4 motivos curtos.
+Ex:
+{
+  "reasons": [
+    "Vence em 3 dias",
+    "Tipo: Cartão (alto risco)",
+    "Parcela representa 12% da renda"
+  ],
+  "score": 92
+}
+
+---
+
+### 2.3 Controller e Rotas
+Criar:
+AIController
+
+Rotas:
+- GET  /ai
+- POST /ai/generate   (gera um draft do período ativo)
+- POST /ai/confirm    (confirma plano, salva confirmed_amount)
+- POST /ai/feedback   (registra feedback rápido, ex: troca estratégia)
+
+Controller::index
+- retornar:
+  - period ativo
+  - preferences (ai_preferences)
+  - plano atual do período (draft ou confirmed)
+  - dados resumo (income, minimum, available, percent committed)
+
+Controller::generate
+- chamar PaymentPlanService e salvar ai_plans+items (status=draft)
+- se já existir draft para período, sobrescrever (ou versionar — MVP: sobrescrever)
+
+Controller::confirm
+- receber payload:
+  - ai_plan_id
+  - items: [{id, confirmed_amount}]
+- marcar plano status=confirmed
+- salvar feedback action=confirm_plan
+
+Controller::feedback
+- actions:
+  - change_strategy (avalanche|snowball)
+  - dismiss_suggestion
+  - adjust_amount
+- atualizar ai_preferences se necessário
+
+---
+
+## 3) Frontend — Página IA
+
+Arquivo:
+resources/js/Pages/AI.vue
+
+### Cabeçalho
+- Título: "Assistente IA"
+- Subtítulo: "Sugestões com confirmação • aprende com você"
+
+### Layout da página
+Use 2 colunas no desktop:
+- esquerda: Resumo e Plano (3 blocos)
+- direita: Simulações + Preferências
+
+No mobile: colunas empilhadas.
+
+---
+
+### A) Resumo do Período
+Card com:
+- Entradas do mês (income)
+- Dívidas mínimas
+- Disponível (available)
+- Comprometimento (%)
+
+Se income=0:
+- mostrar alerta: “Cadastre uma entrada (salário) para o plano ficar correto.”
+
+---
+
+### B) Botões principais
+- “Gerar plano (IA)” -> POST /ai/generate
+- “Confirmar plano”  -> POST /ai/confirm (com valores confirmados)
+
+Se já tiver confirmado:
+- mostrar status “Confirmado”
+- botão “Gerar novo draft” (gera novamente)
+
+---
+
+### C) Plano (3 buckets)
+Renderizar como no design:
+
+1) Obrigatório
+- lista de dívidas + suggested_amount
+- destacar vencimentos próximos com tag warn
+
+2) Prioritário
+- lista das dívidas que receberam extra + amount
+- mostrar badge da estratégia usada (Avalanche/Snowball)
+
+3) Se sobrar
+- mostrar sugestão para Reserva de emergência (valor)
+- “Objetivos” (placeholder)
+- “Investimento” apenas como texto educativo, sem recomendar ativo
+
+Cada item:
+- deve ter botão “Ajustar” que abre modal simples:
+  - alterar confirmed_amount
+  - registrar feedback action=adjust_amount
+
+Mostrar também “Por que essa sugestão?”
+- tooltip/modal que exibe reasons do reason_json (2-4 linhas)
+
+---
+
+### D) Simulações rápidas (MVP)
+Card “Simulação”
+Inputs:
+- extra mensal (number)
+- estratégia (select avalanche/snowball)
+Botão “Simular”
+
+Resultado:
+- tempo estimado até quitar 1 dívida (aprox)
+- qual dívida seria quitada primeiro
+
+⚠️ Não precisa ser perfeito:
+- Para snowball: reduzir primeiro total_amount da menor
+- Para avalanche: reduzir primeiro a de maior score
+Se total_amount null, usar aproximação:
+- total_amount ~= monthly_minimum * 12 (apenas para simulação MVP)
+
+---
+
+### E) Preferências do Assistente
+Card com:
+- Estratégia padrão (select):
+  - Avalanche
+  - Snowball
+Ao mudar, chamar /ai/feedback action=change_strategy e atualizar preferences.
+
+---
+
+## 4) Integração com período global
+Sempre gerar/mostrar plano do:
+- active_year
+- active_month (se all, gerar plano anual simplificado OU obrigar escolher um mês)
+MVP recomendado:
+- Se active_month="all":
+  - mostrar aviso: “Escolha um mês para gerar um plano mensal”
+  - botão “Definir mês atual” (chama resetToToday)
+
+---
+
+## 5) Critérios de aceite
+1) /ai abre e mostra resumo e botões.
+2) “Gerar plano” cria um draft para o período e renderiza 3 blocos.
+3) “Confirmar” salva valores e marca plano confirmado.
+4) Trocar estratégia salva preferência e muda ordenação.
+5) Simulação funciona e retorna resultado coerente.
+6) Tudo responsivo e consistente com CSS.
+
+---
+
+## Entrega final
+- Migrations + seeders + models
+- PaymentPlanService robusto
+- Endpoints funcionando
+- Página AI completa
+- Sem dependências pagas/LLM
