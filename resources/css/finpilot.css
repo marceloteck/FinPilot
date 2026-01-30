@@ -112,10 +112,9 @@ html[data-theme="dark"][data-contrast="high"]{
    Global
 --------------------------- */
 
-*{ box-sizing: border-box; }
-html, body{ height: 100%; }
-body{
-  margin: 0;
+.finpilot-app *{ box-sizing: border-box; }
+.finpilot-app{
+  min-height: 100vh;
   font-family: var(--font);
   font-size: calc(14px * var(--font-scale));
   background:
@@ -125,15 +124,15 @@ body{
   color: var(--text);
 }
 
-a{ color: inherit; text-decoration: none; }
-button, select{ font-family: inherit; }
+.finpilot-app a{ color: inherit; text-decoration: none; }
+.finpilot-app button, .finpilot-app select{ font-family: inherit; }
 
-.muted{ color: var(--muted); }
-.mono{ font-variant-numeric: tabular-nums; }
-.right{ text-align: right; }
-.full{ width: 100%; }
+.finpilot-app .muted{ color: var(--muted); }
+.finpilot-app .mono{ font-variant-numeric: tabular-nums; }
+.finpilot-app .right{ text-align: right; }
+.finpilot-app .full{ width: 100%; }
 
-.app{
+.finpilot-app .app{
   display: grid;
   grid-template-columns: 280px 1fr;
   min-height: 100vh;
@@ -143,7 +142,7 @@ button, select{ font-family: inherit; }
    Sidebar
 --------------------------- */
 
-.sidebar{
+.finpilot-app .sidebar{
   position: sticky;
   top: 0;
   height: 100vh;
@@ -152,12 +151,12 @@ button, select{ font-family: inherit; }
   background: rgba(255,255,255,.70);
   backdrop-filter: blur(10px);
 }
-html[data-theme="dark"] .sidebar,
-html[data-theme="system"] .sidebar{
+html[data-theme="dark"] .finpilot-app .sidebar,
+html[data-theme="system"] .finpilot-app .sidebar{
   background: rgba(15,23,42,.62);
 }
 
-.brand{
+.finpilot-app .brand{
   display: flex;
   align-items: center;
   gap: 12px;
@@ -168,7 +167,7 @@ html[data-theme="system"] .sidebar{
   box-shadow: var(--shadow);
 }
 
-.logo{
+.finpilot-app .logo{
   width: 42px;
   height: 42px;
   border-radius: 14px;
@@ -180,16 +179,16 @@ html[data-theme="system"] .sidebar{
   background: linear-gradient(135deg, var(--primary), rgba(14,165,233,1));
 }
 
-.brand-name{ font-weight: 800; }
-.brand-sub{ color: var(--muted); font-size: 12px; margin-top: 2px; }
+.finpilot-app .brand-name{ font-weight: 800; }
+.finpilot-app .brand-sub{ color: var(--muted); font-size: 12px; margin-top: 2px; }
 
-.nav{
+.finpilot-app .nav{
   margin-top: 16px;
   display: grid;
   gap: 6px;
 }
 
-.nav-link{
+.finpilot-app .nav-link{
   display: flex;
   align-items: center;
   gap: 10px;
@@ -199,39 +198,39 @@ html[data-theme="system"] .sidebar{
   color: var(--muted);
 }
 
-.nav-link:hover{
+.finpilot-app .nav-link:hover{
   background: var(--surface);
   border-color: var(--border);
   color: var(--text);
 }
 
-.nav-link.active{
+.finpilot-app .nav-link.active{
   background: var(--surface);
   border-color: var(--border);
   color: var(--text);
   box-shadow: var(--shadow);
 }
 
-.nav-ico{
+.finpilot-app .nav-ico{
   width: 24px;
   display: inline-grid;
   place-items: center;
   opacity: .9;
 }
 
-.sidebar-foot{
+.finpilot-app .sidebar-foot{
   margin-top: 18px;
   display: grid;
   gap: 10px;
 }
 
-.hint{
+.finpilot-app .hint{
   font-size: 12px;
   color: var(--muted);
   padding: 0 6px;
 }
 
-.chip{
+.finpilot-app .chip{
   display: inline-block;
   padding: 2px 8px;
   border-radius: 999px;
@@ -244,11 +243,11 @@ html[data-theme="system"] .sidebar{
    Main + Topbar
 --------------------------- */
 
-.main{
+.finpilot-app .main{
   padding: 18px 18px 84px;
 }
 
-.topbar{
+.finpilot-app .topbar{
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -256,24 +255,24 @@ html[data-theme="system"] .sidebar{
   margin-bottom: 16px;
 }
 
-.topbar-left{
+.finpilot-app .topbar-left{
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-.page-title h1{
+.finpilot-app .page-title h1{
   margin: 0;
   font-size: 22px;
   letter-spacing: -0.4px;
 }
-.page-title p{
+.finpilot-app .page-title p{
   margin: 4px 0 0;
   color: var(--muted);
   font-size: 13px;
 }
 
-.topbar-right{
+.finpilot-app .topbar-right{
   display: flex;
   align-items: center;
   gap: 12px;
@@ -281,7 +280,7 @@ html[data-theme="system"] .sidebar{
   justify-content: flex-end;
 }
 
-.period{
+.finpilot-app .period{
   display: flex;
   align-items: end;
   gap: 10px;
@@ -292,16 +291,16 @@ html[data-theme="system"] .sidebar{
   box-shadow: var(--shadow);
 }
 
-.field{
+.finpilot-app .field{
   display: grid;
   gap: 6px;
 }
-.label{
+.finpilot-app .label{
   font-size: 12px;
   color: var(--muted);
 }
 
-.select{
+.finpilot-app .select{
   height: 40px;
   padding: 0 12px;
   border-radius: 12px;
@@ -312,12 +311,12 @@ html[data-theme="system"] .sidebar{
   min-width: 92px;
 }
 
-.select:focus{
+.finpilot-app .select:focus{
   box-shadow: var(--ring);
   border-color: transparent;
 }
 
-.input{
+.finpilot-app .input{
   height: 40px;
   padding: 0 12px;
   border-radius: 12px;
@@ -328,17 +327,17 @@ html[data-theme="system"] .sidebar{
   width: 100%;
 }
 
-.input:focus{
+.finpilot-app .input:focus{
   box-shadow: var(--ring);
   border-color: transparent;
 }
 
-.actions{
+.finpilot-app .actions{
   display: flex;
   gap: 10px;
 }
 
-.filters{
+.finpilot-app .filters{
   margin-top: 12px;
   display: flex;
   flex-wrap: wrap;
@@ -350,7 +349,7 @@ html[data-theme="system"] .sidebar{
    Buttons
 --------------------------- */
 
-.btn{
+.finpilot-app .btn{
   height: 40px;
   padding: 0 14px;
   border-radius: 12px;
@@ -361,21 +360,21 @@ html[data-theme="system"] .sidebar{
   box-shadow: var(--shadow);
 }
 
-.btn:hover{ transform: translateY(-1px); }
-.btn:active{ transform: translateY(0px); }
+.finpilot-app .btn:hover{ transform: translateY(-1px); }
+.finpilot-app .btn:active{ transform: translateY(0px); }
 
-.btn.primary{
+.finpilot-app .btn.primary{
   background: linear-gradient(135deg, var(--primary), rgba(14,165,233,1));
   border-color: transparent;
   color: #fff;
 }
 
-.btn.ghost{
+.finpilot-app .btn.ghost{
   background: transparent;
   box-shadow: none;
 }
 
-.link{
+.finpilot-app .link{
   margin-left: 10px;
   border: none;
   background: transparent;
@@ -386,7 +385,7 @@ html[data-theme="system"] .sidebar{
   opacity: .85;
 }
 
-.icon-btn{
+.finpilot-app .icon-btn{
   height: 40px;
   width: 40px;
   border-radius: 12px;
@@ -400,21 +399,21 @@ html[data-theme="system"] .sidebar{
    Layout Grid
 --------------------------- */
 
-.grid{
+.finpilot-app .grid{
   display: grid;
   grid-template-columns: repeat(12, 1fr);
   gap: 14px;
 }
 
-.span-12{ grid-column: span 12; }
-.span-7{ grid-column: span 7; }
-.span-5{ grid-column: span 5; }
+.finpilot-app .span-12{ grid-column: span 12; }
+.finpilot-app .span-7{ grid-column: span 7; }
+.finpilot-app .span-5{ grid-column: span 5; }
 
 /* ---------------------------
    Cards
 --------------------------- */
 
-.card{
+.finpilot-app .card{
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--surface);
@@ -422,7 +421,7 @@ html[data-theme="system"] .sidebar{
   padding: 14px;
 }
 
-.card-head{
+.finpilot-app .card-head{
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -430,46 +429,46 @@ html[data-theme="system"] .sidebar{
   margin-bottom: 12px;
 }
 
-.card-head h2{
+.finpilot-app .card-head h2{
   margin: 0;
   font-size: 16px;
   letter-spacing: -0.2px;
 }
-.card-head p{
+.finpilot-app .card-head p{
   margin: 4px 0 0;
   font-size: 12px;
   color: var(--muted);
 }
 
-.card-actions{
+.finpilot-app .card-actions{
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
   justify-content: flex-end;
 }
 
-.card-foot{
+.finpilot-app .card-foot{
   margin-top: 12px;
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
 }
 
-.segmented{
+.finpilot-app .segmented{
   display: inline-flex;
   border: 1px solid var(--border);
   border-radius: 999px;
   overflow: hidden;
   background: var(--surface-2);
 }
-.seg{
+.finpilot-app .seg{
   border: none;
   background: transparent;
   color: var(--muted);
   padding: 8px 12px;
   cursor: pointer;
 }
-.seg.active{
+.finpilot-app .seg.active{
   background: var(--surface);
   color: var(--text);
 }
@@ -478,43 +477,43 @@ html[data-theme="system"] .sidebar{
    KPI row
 --------------------------- */
 
-.kpis{
+.finpilot-app .kpis{
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
 }
 
-.kpi{
+.finpilot-app .kpi{
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 12px;
   background: var(--surface);
 }
 
-.kpi.highlight{
+.finpilot-app .kpi.highlight{
   border-color: rgba(37,99,235,.28);
   background:
     radial-gradient(700px 260px at 30% -10%, var(--primary-2), transparent 60%),
     var(--surface);
 }
 
-.kpi-label{ color: var(--muted); font-size: 12px; }
-.kpi-value{ font-size: 20px; font-weight: 800; margin-top: 6px; }
-.kpi-foot{ margin-top: 6px; font-size: 12px; color: var(--muted); }
-.kpi-foot.up{ color: var(--ok); }
-.kpi-foot.warn{ color: var(--warn); }
+.finpilot-app .kpi-label{ color: var(--muted); font-size: 12px; }
+.finpilot-app .kpi-value{ font-size: 20px; font-weight: 800; margin-top: 6px; }
+.finpilot-app .kpi-foot{ margin-top: 6px; font-size: 12px; color: var(--muted); }
+.finpilot-app .kpi-foot.up{ color: var(--ok); }
+.finpilot-app .kpi-foot.warn{ color: var(--warn); }
 
 /* ---------------------------
    Salary commitment bar
 --------------------------- */
 
-.bar-wrap{
+.finpilot-app .bar-wrap{
   margin-top: 12px;
   display: grid;
   gap: 10px;
 }
 
-.bar{
+.finpilot-app .bar{
   position: relative;
   height: 44px;
   border-radius: 999px;
@@ -523,14 +522,14 @@ html[data-theme="system"] .sidebar{
   overflow: hidden;
 }
 
-.bar-fill{
+.finpilot-app .bar-fill{
   position: absolute;
   inset: 0;
   width: 0;
   background: linear-gradient(90deg, rgba(245,158,11,.45), rgba(37,99,235,.45));
 }
 
-.bar-meta{
+.finpilot-app .bar-meta{
   position: relative;
   z-index: 1;
   height: 100%;
@@ -542,7 +541,7 @@ html[data-theme="system"] .sidebar{
   color: var(--text);
 }
 
-.bar-sub{
+.finpilot-app .bar-sub{
   display: flex;
   align-items: center;
   gap: 12px;
@@ -551,7 +550,7 @@ html[data-theme="system"] .sidebar{
   flex-wrap: wrap;
 }
 
-.dot{
+.finpilot-app .dot{
   width: 10px;
   height: 10px;
   border-radius: 999px;
@@ -559,21 +558,21 @@ html[data-theme="system"] .sidebar{
   margin-right: 6px;
 }
 
-.dot.debt{ background: rgba(245, 158, 11, .85); }
-.dot.fixed{ background: rgba(37, 99, 235, .85); }
-.dot.var{ background: rgba(14, 165, 233, .85); }
+.finpilot-app .dot.debt{ background: rgba(245, 158, 11, .85); }
+.finpilot-app .dot.fixed{ background: rgba(37, 99, 235, .85); }
+.finpilot-app .dot.var{ background: rgba(14, 165, 233, .85); }
 
 /* ---------------------------
    Alerts
 --------------------------- */
 
-.alerts{
+.finpilot-app .alerts{
   margin-top: 12px;
   display: grid;
   gap: 10px;
 }
 
-.empty{
+.finpilot-app .empty{
   padding: 20px;
   border: 1px dashed var(--border);
   border-radius: var(--radius);
@@ -582,7 +581,7 @@ html[data-theme="system"] .sidebar{
   gap: 12px;
 }
 
-.modal-backdrop{
+.finpilot-app .modal-backdrop{
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,.4);
@@ -592,11 +591,11 @@ html[data-theme="system"] .sidebar{
   z-index: 50;
 }
 
-.modal{
+.finpilot-app .modal{
   width: min(720px, 100%);
 }
 
-.pagination{
+.finpilot-app .pagination{
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -604,7 +603,7 @@ html[data-theme="system"] .sidebar{
   gap: 12px;
 }
 
-.alert{
+.finpilot-app .alert{
   border-radius: 14px;
   border: 1px solid var(--border);
   padding: 10px 12px;
@@ -615,28 +614,28 @@ html[data-theme="system"] .sidebar{
   gap: 10px;
 }
 
-.alert.warn{ background: var(--warn-2); }
-.alert.info{ background: var(--info-2); }
-.alert.ok{ background: var(--ok-2); }
+.finpilot-app .alert.warn{ background: var(--warn-2); }
+.finpilot-app .alert.info{ background: var(--info-2); }
+.finpilot-app .alert.ok{ background: var(--ok-2); }
 
 /* ---------------------------
    Table
 --------------------------- */
 
-.table-wrap{
+.finpilot-app .table-wrap{
   overflow: auto;
   border: 1px solid var(--border);
   border-radius: var(--radius);
 }
 
-.table{
+.finpilot-app .table{
   width: 100%;
   border-collapse: collapse;
   min-width: 640px;
   background: var(--surface);
 }
 
-.table thead th{
+.finpilot-app .table thead th{
   position: sticky;
   top: 0;
   background: var(--surface);
@@ -648,17 +647,17 @@ html[data-theme="system"] .sidebar{
   z-index: 1;
 }
 
-.table td{
+.finpilot-app .table td{
   border-top: 1px solid var(--border);
   padding: 10px;
   vertical-align: top;
   font-size: 13px;
 }
 
-.cell-main{ font-weight: 700; }
-.cell-sub{ margin-top: 2px; font-size: 12px; color: var(--muted); }
+.finpilot-app .cell-main{ font-weight: 700; }
+.finpilot-app .cell-sub{ margin-top: 2px; font-size: 12px; color: var(--muted); }
 
-.pill{
+.finpilot-app .pill{
   display: inline-flex;
   align-items: center;
   padding: 4px 10px;
@@ -669,7 +668,7 @@ html[data-theme="system"] .sidebar{
   color: var(--text);
 }
 
-.tag{
+.finpilot-app .tag{
   display: inline-flex;
   align-items: center;
   padding: 4px 10px;
@@ -680,10 +679,10 @@ html[data-theme="system"] .sidebar{
   color: var(--text);
 }
 
-.tag.warn{ background: var(--warn-2); }
-.tag.ok{ background: var(--ok-2); }
+.finpilot-app .tag.warn{ background: var(--warn-2); }
+.finpilot-app .tag.ok{ background: var(--ok-2); }
 
-.badge{
+.finpilot-app .badge{
   display: inline-flex;
   align-items: center;
   padding: 4px 10px;
@@ -694,10 +693,10 @@ html[data-theme="system"] .sidebar{
   color: var(--text);
 }
 
-.badge.warn{ background: var(--warn-2); }
-.badge.ok{ background: var(--ok-2); }
+.finpilot-app .badge.warn{ background: var(--warn-2); }
+.finpilot-app .badge.ok{ background: var(--ok-2); }
 
-.score{
+.finpilot-app .score{
   display: inline-grid;
   place-items: center;
   min-width: 40px;
@@ -708,15 +707,15 @@ html[data-theme="system"] .sidebar{
   font-weight: 800;
   font-size: 12px;
 }
-.score.high{ box-shadow: 0 0 0 4px rgba(245,158,11,.10); }
-.score.med{ box-shadow: 0 0 0 4px rgba(14,165,233,.08); }
-.score.low{ box-shadow: 0 0 0 4px rgba(148,163,184,.08); }
+.finpilot-app .score.high{ box-shadow: 0 0 0 4px rgba(245,158,11,.10); }
+.finpilot-app .score.med{ box-shadow: 0 0 0 4px rgba(14,165,233,.08); }
+.finpilot-app .score.low{ box-shadow: 0 0 0 4px rgba(148,163,184,.08); }
 
 /* ---------------------------
    IA panel
 --------------------------- */
 
-.ai-box{
+.finpilot-app .ai-box{
   display: grid;
   gap: 10px;
   border: 1px solid var(--border);
@@ -727,16 +726,16 @@ html[data-theme="system"] .sidebar{
   padding: 12px;
 }
 
-.ai-step{
+.finpilot-app .ai-step{
   border: 1px solid var(--border);
   background: var(--surface);
   border-radius: 14px;
   padding: 10px;
 }
 
-.ai-title{ font-weight: 800; }
-.ai-desc{ margin-top: 3px; color: var(--muted); font-size: 12px; }
-.ai-row{
+.finpilot-app .ai-title{ font-weight: 800; }
+.finpilot-app .ai-desc{ margin-top: 3px; color: var(--muted); font-size: 12px; }
+.finpilot-app .ai-row{
   margin-top: 8px;
   display: flex;
   align-items: center;
@@ -744,13 +743,13 @@ html[data-theme="system"] .sidebar{
   gap: 10px;
 }
 
-.ai-actions{
+.finpilot-app .ai-actions{
   display: grid;
   gap: 8px;
   margin-top: 6px;
 }
 
-.mini{
+.finpilot-app .mini{
   margin-top: 12px;
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -758,14 +757,14 @@ html[data-theme="system"] .sidebar{
   background: var(--surface-2);
 }
 
-.mini-row{
+.finpilot-app .mini-row{
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
   font-size: 12px;
 }
-.mini-big{
+.finpilot-app .mini-big{
   margin-top: 8px;
   font-weight: 800;
 }
@@ -774,13 +773,13 @@ html[data-theme="system"] .sidebar{
    Transactions list (responsive friendly)
 --------------------------- */
 
-.list{
+.finpilot-app .list{
   display: grid;
   gap: 10px;
 }
 
 /* (mantendo seu bloco editado exatamente) */
-.list-item{
+.finpilot-app .list-item{
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 12px;
@@ -791,25 +790,25 @@ html[data-theme="system"] .sidebar{
   background: var(--surface);
 }
 
-.li-title{ font-weight: 800; }
-.li-sub{ margin-top: 4px; font-size: 12px; color: var(--muted); }
+.finpilot-app .li-title{ font-weight: 800; }
+.finpilot-app .li-sub{ margin-top: 4px; font-size: 12px; color: var(--muted); }
 
-.li-right{
+.finpilot-app .li-right{
   display: grid;
   justify-items: end;
   gap: 6px;
 }
-.li-amount{
+.finpilot-app .li-amount{
   font-weight: 900;
   font-variant-numeric: tabular-nums;
 }
-.li-amount.plus{ color: var(--ok); }
+.finpilot-app .li-amount.plus{ color: var(--ok); }
 
 /* ---------------------------
    Bottom nav (mobile)
 --------------------------- */
 
-.bottom-nav{
+.finpilot-app .bottom-nav{
   position: fixed;
   left: 0; right: 0; bottom: 0;
   height: 64px;
@@ -822,12 +821,12 @@ html[data-theme="system"] .sidebar{
   padding: 8px 10px;
 }
 
-html[data-theme="dark"] .bottom-nav,
-html[data-theme="system"] .bottom-nav{
+html[data-theme="dark"] .finpilot-app .bottom-nav,
+html[data-theme="system"] .finpilot-app .bottom-nav{
   background: rgba(15,23,42,.78);
 }
 
-.bn{
+.finpilot-app .bn{
   display: grid;
   justify-items: center;
   gap: 4px;
@@ -836,59 +835,59 @@ html[data-theme="system"] .bottom-nav{
   min-width: 62px;
 }
 
-.bn small{
+.finpilot-app .bn small{
   font-size: 11px;
 }
 
-.bn.active{ color: var(--text); }
+.finpilot-app .bn.active{ color: var(--text); }
 
 /* ---------------------------
    Responsive
 --------------------------- */
 
-.mobile-only{ display: none; }
-.desktop-only{ display: block; }
-.mobile-only-block{ display: none; }
+.finpilot-app .mobile-only{ display: none; }
+.finpilot-app .desktop-only{ display: block; }
+.finpilot-app .mobile-only-block{ display: none; }
 
 @media (max-width: 980px){
-  .app{ grid-template-columns: 1fr; }
-  .sidebar{ display: none; }
+  .finpilot-app .app{ grid-template-columns: 1fr; }
+  .finpilot-app .sidebar{ display: none; }
 
-  .main{ padding: 16px 14px 84px; }
+  .finpilot-app .main{ padding: 16px 14px 84px; }
 
-  .mobile-only{ display: inline-grid; place-items: center; }
-  .desktop-only{ display: none; }
-  .mobile-only-block{ display: block; }
-  .bottom-nav{ display: flex; }
+  .finpilot-app .mobile-only{ display: inline-grid; place-items: center; }
+  .finpilot-app .desktop-only{ display: none; }
+  .finpilot-app .mobile-only-block{ display: block; }
+  .finpilot-app .bottom-nav{ display: flex; }
 
-  .topbar{
+  .finpilot-app .topbar{
     flex-direction: column;
     align-items: stretch;
   }
 
-  .topbar-right{
+  .finpilot-app .topbar-right{
     justify-content: flex-start;
   }
 
-  .kpis{
+  .finpilot-app .kpis{
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .span-7, .span-5{
+  .finpilot-app .span-7, .finpilot-app .span-5{
     grid-column: span 12;
   }
 
-  .period{
+  .finpilot-app .period{
     width: 100%;
     justify-content: space-between;
   }
 }
 
 @media (max-width: 520px){
-  .kpis{ grid-template-columns: 1fr; }
-  .actions{ width: 100%; }
-  .actions .btn{ flex: 1; }
-  .period{ flex-wrap: wrap; }
-  .select{ min-width: 120px; width: 100%; }
-  .field{ width: 100%; }
+  .finpilot-app .kpis{ grid-template-columns: 1fr; }
+  .finpilot-app .actions{ width: 100%; }
+  .finpilot-app .actions .btn{ flex: 1; }
+  .finpilot-app .period{ flex-wrap: wrap; }
+  .finpilot-app .select{ min-width: 120px; width: 100%; }
+  .finpilot-app .field{ width: 100%; }
 }

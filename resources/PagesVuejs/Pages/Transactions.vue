@@ -16,6 +16,8 @@
             </select>
             <button class="btn ghost" type="button" @click="startSaveView">Salvar visão</button>
             <button class="btn ghost" type="button" @click="startSaveAs">Salvar como…</button>
+            <Link class="btn ghost" href="/transactions/import">Importar CSV</Link>
+            <Link class="btn ghost" :href="exportUrl">Exportar CSV</Link>
             <button
               class="btn"
               type="button"
@@ -65,6 +67,7 @@
             </select>
           </label>
           <button class="btn" type="button" @click="applyFilters">Filtrar</button>
+          <button v-if="hasFilters" class="btn ghost" type="button" @click="clearFilters">Resetar filtros</button>
           <button class="btn ghost" type="button" @click="toggleAdvanced">
             Filtro avançado
           </button>
@@ -279,7 +282,7 @@
 
 <script setup>
 import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
-import { Head, router, usePage } from '@inertiajs/vue3';
+import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import AppLayout from '../components/Layouts/AppLayout.vue';
 import { getPeriod, resetToToday } from '../../js/finpilot/period';
 
@@ -356,6 +359,22 @@ const hasFilters = computed(() => {
       filters.date_to ||
       filters.direction
   );
+});
+
+const exportUrl = computed(() => {
+  const period = getPeriod();
+  const params = new URLSearchParams();
+  const payload = {
+    ...filters,
+    view_id: selectedViewId.value,
+    active_year: period.active_year,
+    active_month: period.active_month,
+  };
+  Object.entries(payload).forEach(([key, value]) => {
+    if (value === null || value === undefined || value === '') return;
+    params.set(key, value);
+  });
+  return `/transactions/export?${params.toString()}`;
 });
 
 const applyFilters = () => {
