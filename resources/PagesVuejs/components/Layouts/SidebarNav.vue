@@ -9,7 +9,7 @@
     </div>
 
     <nav class="nav">
-      <Link class="nav-link" :class="{ active: isActive('/') }" href="/">
+      <Link class="nav-link" :class="{ active: isActive('/dashboard') }" href="/dashboard">
         <span class="nav-ico" aria-hidden="true">▦</span> Home
       </Link>
       <Link class="nav-link" :class="{ active: isActive('/transactions') }" href="/transactions">
@@ -33,7 +33,7 @@
     </nav>
 
     <div class="sidebar-foot">
-      <button class="btn ghost full" type="button">Personalizar Dashboard</button>
+      <Link class="btn ghost full" href="/settings">Personalizar Dashboard</Link>
       <div class="hint">
         Tema: <span class="chip">{{ uiPrefs.theme }}</span>
         • Acessibilidade: <span class="chip">{{ uiPrefs.contrast }}</span>
@@ -48,5 +48,5 @@ import { Link, usePage } from '@inertiajs/vue3';
 const page = usePage();
 const uiPrefs = page.props.uiPrefs ?? { theme: 'system', contrast: 'normal' };
 
-const isActive = (path) => (path === '/' ? page.url === '/' : page.url.startsWith(path));
+const isActive = (path) => (path === '/dashboard' ? page.url === '/dashboard' : page.url.startsWith(path));
 </script>

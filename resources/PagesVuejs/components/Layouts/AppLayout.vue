@@ -1,13 +1,15 @@
 <template>
-  <div class="app">
-    <SidebarNav />
+  <div class="finpilot-app">
+    <div class="app">
+      <SidebarNav />
 
-    <main class="main">
-      <Topbar :title="title" :subtitle="subtitle" />
-      <slot />
-    </main>
+      <main class="main">
+        <Topbar :title="title" :subtitle="subtitle" />
+        <slot />
+      </main>
 
-    <BottomNav />
+      <BottomNav />
+    </div>
   </div>
 </template>
 

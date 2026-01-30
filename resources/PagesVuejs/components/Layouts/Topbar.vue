@@ -36,7 +36,7 @@
       </section>
 
       <div class="actions">
-        <button class="btn ghost" type="button">Importar</button>
+        <Link class="btn ghost" href="/transactions/import">Importar</Link>
         <Link class="btn primary" href="/ai">Gerar plano (IA)</Link>
       </div>
     </div>

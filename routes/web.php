@@ -27,27 +27,36 @@ Route::middleware('guest')->group(function () {
 });
 // end rotas
 
-Route::get('/transactions', [TransactionController::class, 'index'])->name('finpilot.transactions');
-Route::post('/transactions', [TransactionController::class, 'store'])->name('finpilot.transactions.store');
-Route::put('/transactions/{transaction}', [TransactionController::class, 'update'])->name('finpilot.transactions.update');
-Route::delete('/transactions/{transaction}', [TransactionController::class, 'destroy'])->name('finpilot.transactions.destroy');
+Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', [PageController::class, 'home'])->name('finpilot.dashboard');
 
-Route::post('/views', [ViewController::class, 'store'])->name('finpilot.views.store');
-Route::put('/views/{view}', [ViewController::class, 'update'])->name('finpilot.views.update');
-Route::delete('/views/{view}', [ViewController::class, 'destroy'])->name('finpilot.views.destroy');
+    Route::get('/transactions', [TransactionController::class, 'index'])->name('finpilot.transactions');
+    Route::post('/transactions', [TransactionController::class, 'store'])->name('finpilot.transactions.store');
+    Route::put('/transactions/{transaction}', [TransactionController::class, 'update'])->name('finpilot.transactions.update');
+    Route::delete('/transactions/{transaction}', [TransactionController::class, 'destroy'])->name('finpilot.transactions.destroy');
+    Route::get('/transactions/import', [TransactionController::class, 'importForm'])->name('finpilot.transactions.import');
+    Route::get('/transactions/import/template', [TransactionController::class, 'importTemplate'])->name('finpilot.transactions.import.template');
+    Route::post('/transactions/import/preview', [TransactionController::class, 'importPreview'])->name('finpilot.transactions.import.preview');
+    Route::post('/transactions/import/confirm', [TransactionController::class, 'importConfirm'])->name('finpilot.transactions.import.confirm');
+    Route::get('/transactions/export', [TransactionController::class, 'export'])->name('finpilot.transactions.export');
 
-Route::get('/debts', [DebtController::class, 'index'])->name('finpilot.debts');
-Route::post('/debts', [DebtController::class, 'store'])->name('finpilot.debts.store');
-Route::put('/debts/{debt}', [DebtController::class, 'update'])->name('finpilot.debts.update');
-Route::delete('/debts/{debt}', [DebtController::class, 'destroy'])->name('finpilot.debts.destroy');
+    Route::post('/views', [ViewController::class, 'store'])->name('finpilot.views.store');
+    Route::put('/views/{view}', [ViewController::class, 'update'])->name('finpilot.views.update');
+    Route::delete('/views/{view}', [ViewController::class, 'destroy'])->name('finpilot.views.destroy');
 
-Route::get('/ai', [AIController::class, 'index'])->name('finpilot.ai');
-Route::post('/ai/generate', [AIController::class, 'generate'])->name('finpilot.ai.generate');
-Route::post('/ai/confirm', [AIController::class, 'confirm'])->name('finpilot.ai.confirm');
-Route::post('/ai/feedback', [AIController::class, 'feedback'])->name('finpilot.ai.feedback');
-Route::get('/goals', [PageController::class, 'goals'])->name('finpilot.goals');
-Route::get('/reports', [ReportsController::class, 'index'])->name('finpilot.reports');
-Route::get('/settings', [PageController::class, 'settings'])->name('finpilot.settings');
+    Route::get('/debts', [DebtController::class, 'index'])->name('finpilot.debts');
+    Route::post('/debts', [DebtController::class, 'store'])->name('finpilot.debts.store');
+    Route::put('/debts/{debt}', [DebtController::class, 'update'])->name('finpilot.debts.update');
+    Route::delete('/debts/{debt}', [DebtController::class, 'destroy'])->name('finpilot.debts.destroy');
+
+    Route::get('/ai', [AIController::class, 'index'])->name('finpilot.ai');
+    Route::post('/ai/generate', [AIController::class, 'generate'])->name('finpilot.ai.generate');
+    Route::post('/ai/confirm', [AIController::class, 'confirm'])->name('finpilot.ai.confirm');
+    Route::post('/ai/feedback', [AIController::class, 'feedback'])->name('finpilot.ai.feedback');
+    Route::get('/goals', [PageController::class, 'goals'])->name('finpilot.goals');
+    Route::get('/reports', [ReportsController::class, 'index'])->name('finpilot.reports');
+    Route::get('/settings', [PageController::class, 'settings'])->name('finpilot.settings');
+});
 
 Route::middleware(['auth', 'first.user.admin'])->group(function () {
     Route::get('/admin/hotmart', [AdminHotmartController::class, 'index'])->name('admin.hotmart');

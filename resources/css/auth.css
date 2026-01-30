@@ -1,0 +1,139 @@
+.auth-shell {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 32px 16px;
+  background: radial-gradient(900px 480px at 10% -10%, rgba(37, 99, 235, 0.12), transparent 65%),
+    radial-gradient(900px 480px at 90% 0%, rgba(14, 165, 233, 0.12), transparent 60%),
+    #f9fafc;
+  color: #0b1220;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+}
+
+.auth-card {
+  width: min(420px, 100%);
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 28px;
+  border: 1px solid rgba(11, 18, 32, 0.12);
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.12);
+  display: grid;
+  gap: 16px;
+}
+
+.auth-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+  font-size: 18px;
+}
+
+.auth-badge {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #2563eb, #0ea5e9);
+  color: #fff;
+  font-weight: 800;
+}
+
+.auth-title {
+  margin: 0;
+  font-size: 22px;
+}
+
+.auth-subtitle {
+  margin: 0;
+  color: #667085;
+  font-size: 14px;
+}
+
+.auth-form {
+  display: grid;
+  gap: 12px;
+}
+
+.auth-field {
+  display: grid;
+  gap: 6px;
+}
+
+.auth-label {
+  font-size: 12px;
+  color: #667085;
+}
+
+.auth-input {
+  height: 42px;
+  padding: 0 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(11, 18, 32, 0.12);
+  background: #f4f6fb;
+  color: #0b1220;
+  outline: none;
+}
+
+.auth-input:focus {
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.18);
+  border-color: transparent;
+}
+
+.auth-actions {
+  display: grid;
+  gap: 10px;
+}
+
+.auth-button {
+  height: 42px;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, #2563eb, #0ea5e9);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.auth-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.auth-link {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 600;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.auth-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  color: #475467;
+}
+
+.auth-error {
+  color: #dc2626;
+  font-size: 12px;
+}
+
+.auth-alert {
+  background: rgba(37, 99, 235, 0.08);
+  border: 1px solid rgba(37, 99, 235, 0.2);
+  color: #1d4ed8;
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+}
+
+.auth-footer {
+  text-align: center;
+  font-size: 13px;
+  color: #667085;
+}
