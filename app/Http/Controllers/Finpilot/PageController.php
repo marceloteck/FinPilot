@@ -152,6 +152,8 @@ class PageController extends Controller
             ->whereIn('status', ['active', 'renegotiating'])
             ->sum('monthly_minimum');
 
+        $previousBalanceBase = (float) $prevIncome - (float) $prevExpensesAbs - (float) $prevDebtMinimum;
+
         $comparison = [
             'period_label' => $period['month'] === 'all'
                 ? 'vs ano anterior'
@@ -159,12 +161,12 @@ class PageController extends Controller
             'income_diff' => (float) $income - (float) $prevIncome,
             'expenses_diff' => (float) abs($expenses) - (float) abs($prevExpenses),
             'debt_diff' => (float) $debtMinimum - (float) $prevDebtMinimum,
-            'balance_diff' => (float) $balance - (float) ($prevIncome - abs($prevExpenses) - $prevDebtMinimum),
+            'balance_diff' => (float) $balance - $previousBalanceBase,
             'income_pct' => $prevIncome > 0 ? round((($income - $prevIncome) / $prevIncome) * 100, 1) : null,
             'expenses_pct' => $prevExpensesAbs > 0 ? round(((abs($expenses) - $prevExpensesAbs) / $prevExpensesAbs) * 100, 1) : null,
             'debt_pct' => $prevDebtMinimum > 0 ? round((($debtMinimum - $prevDebtMinimum) / $prevDebtMinimum) * 100, 1) : null,
-            'balance_pct' => ($prevIncome - $prevExpensesAbs - $prevDebtMinimum) !== 0
-                ? round((($balance - ($prevIncome - $prevExpensesAbs - $prevDebtMinimum)) / ($prevIncome - $prevExpensesAbs - $prevDebtMinimum)) * 100, 1)
+            'balance_pct' => $previousBalanceBase !== 0.0
+                ? round((($balance - $previousBalanceBase) / $previousBalanceBase) * 100, 1)
                 : null,
         ];
 
